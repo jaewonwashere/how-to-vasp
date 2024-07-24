@@ -1,61 +1,107 @@
-# VASP: A Beginner's Guide to Adsorption Energy Calculations
+# OCP_screening
 
-This guide introduces the basics of performing adsorption energy calculations using VASP (Vienna Ab initio Simulation Package).
+Codebase for screening catalysts using the [Open Catalyst Project](https://opencatalystproject.org/index.html). This project is largely based on the Open Catalyst Project tutorials available in Meta AI Research's [fair-chem repository](https://github.com/FAIR-Chem/fairchem).
 
-## Table of Contents
-1. [Input Files](#input-files)
-2. [KPOINTS](#kpoints)
-   - [Understanding K-space](#understanding-k-space)
-   - [K-point Mesh](#k-point-mesh)
-   - [Convergence Testing](#convergence-testing)
+## Features
 
-## Input Files
+- Scripts for determining relevant bulk structures
+- Surface cleaving tools
+- Adsorption site setting
+- Adslab configuration
+- Relaxation procedures
+- Post-processing utilities
 
-To run a VASP calculation, you need four main input files:
+## Setup Guide (UCSB CSC Pod Cluster)
 
-1. INCAR
-2. POSCAR
-3. POTCAR
-4. KPOINTS
+This guide will help you set up your environment on the UCSB cluster for running OCP calculations.
 
-Let's explore these files, starting with KPOINTS.
+### Prerequisites
 
-## KPOINTS
+- UCSB Center for Scientific Computing account
+- Basic understanding of Linux command line interface (CLI)
 
-### Understanding K-space
+### Step-by-step Setup
 
-In Density Functional Theory (DFT) calculations for periodic systems, we utilize k-space (reciprocal space) instead of real space. This approach is based on Bloch's theorem and offers computational advantages.
+1. **Request an Account**
+   - Visit the [UCSB Center for Scientific Computing](https://csc.cnsi.ucsb.edu/) website
+   - Allow a few days for account setup
 
-#### Bloch's Theorem
-The wave function in a periodic potential takes the form of a Bloch function:
+2. **Set Up SSH Client**
+   - Choose a client based on your local operating system:
+     - Windows: WSL or PuTTY
+     - MacOS/Linux: Default terminal
+   - Refer to the [UCSB CNSI CSC's HPC overview](https://csc.cnsi.ucsb.edu/sites/default/files/2023-01/HPC_Workshop_Winter_23.pdf) for detailed instructions
 
-![Bloch Function](https://github.com/user-attachments/assets/6e0966cb-0ffe-4b77-bb4f-5ad730a563d5)
+3. **Initial Login and Password Change**
+   - SSH into your account:
+     ```bash
+     ssh your-login@pod-login1.cnsi.ucsb.edu
+     ```
+   - Use the temporary password provided in your email
+   - Follow email instructions to change your password
 
-Key points about k-space:
-- It's where wave vectors (**k**) reside
-- Also known as reciprocal space
-- Vectors in k-space are inversely proportional to real space vectors
-  - |**a**| in real space → 2π/|**a**| in k-space
+4. **Verify Login**
+   - You should see a welcome message:
+     ```
+     ----------------------------
+     
+     Welcome to Pod
+     For basic documentation to get started please see
+     http://csc.cnsi.ucsb.edu/docs/pod-cluster
+     ```
 
-> 💡 **Tip:** For a deeper understanding of reciprocal space, refer to Chapter 3.1 in Sholl and Steckel's book.
+5. **Install Miniconda**
+   - Run the following commands:
+     ```bash
+     mkdir -p ~/miniconda3
+     wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
+     bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
+     rm -rf ~/miniconda3/miniconda.sh
+     ```
+   - Initialize Miniconda:
+     ```bash
+     ~/miniconda3/bin/conda init bash
+     ~/miniconda3/bin/conda init zsh
+     ```
 
-### K-point Mesh
+6. **Verify Miniconda Installation**
+   - Check for the 'miniconda3' folder in your home directory
 
-To perform calculations in k-space, we define a k-point mesh. The most common method is the Monkhorst-Pack grid, which creates a uniformly spaced grid in the [Brillouin Zone](https://en.wikipedia.org/wiki/Brillouin_zone).
+7. **Copy Environment File**
+   - Copy the pre-configured environment file:
+     ```bash
+     cp /home/jaewon_lee/fairchem_Pod.yml ~
+     ```
 
-#### Specifying the Mesh
-- Define the number of k-points in each direction: _n<sub>1</sub>_ × _n<sub>2</sub>_ × _n<sub>3</sub>_
-- VASP handles the rest of the setup
+8. **Create Conda Environment**
+   - Run:
+     ```bash
+     conda env create -f fairchem_Pod.yml
+     ```
 
-#### Trade-offs
-- Denser k-point grid → More accurate but computationally intensive
-- Larger real-space unit cell → Fewer k-points needed (and vice versa)
+9. **Activate Environment**
+   - Activate the new environment:
+     ```bash
+     conda activate fair-chem
+     ```
+   - Your prompt should change to indicate the active environment
 
-### Convergence Testing
+10. **Ready to Go!**
+    - You're now set up to run OCP calculations
 
-To determine the optimal k-point mesh density, perform a convergence test:
-1. Run calculations with increasing numbers of k-points
-2. Analyze the results to find the point where increasing k-points no longer significantly improves accuracy
-3. Choose the k-point density that balances accuracy and computational cost
+### Useful Linux Commands
 
-> ⚠️ **Important:** Always perform a convergence test for your specific structure to ensure reliable results.
+| Command | Description | Example |
+|---------|-------------|---------|
+| `ls` | List files/folders | `ls` |
+| `cd` | Change directory | `cd /path/to/directory` |
+| `pwd` | Print working directory | `pwd` |
+
+> 💡 **Tip:** The home directory can be accessed with `cd ~` or `cd /home/your_username/`
+
+### Additional Resources
+
+- [CSC's HPC overview](https://csc.cnsi.ucsb.edu/sites/default/files/2023-01/HPC_Workshop_Winter_23.pdf)
+- [Linux Command Line Cheat Sheet](https://www.stationx.net/linux-command-line-cheat-sheet/)
+
+For any issues or questions, please contact: jaewon_lee@ucsb.edu
