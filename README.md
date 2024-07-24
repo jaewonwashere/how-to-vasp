@@ -24,8 +24,19 @@ To do this, we need to move from the 3d-space that we live in, called real space
 
 If we were to integrate in real space, we would have to do a continuous integral, because the space we are integrating over is continuous. In reciprocal space, the integral is only calculated over possible values of **k**. This makes the calculation a lot less intense.
 
-For the computer to run these calculations, we need to tell it how to do it. This is done by specifying a *k-point mesh*. The most common way to do this is using a Monkhorst-Pack grid (essentially a uniformly spaced grid in the [Brillouin Zone](https://en.wikipedia.org/wiki/Brillouin_zone)). Using this method, if we tell the computer the number of *k-points* to sample in each direction (_n<sub>1</sub>_ × _n<sub>2</sub>_ × _n<sub>3</sub>_), VASP (or other DFT package) will take care of the rest.
+For the computer to run these calculations, we need to tell it how to do it. This is done by specifying a *k-point mesh*. The most common way to do this is using a Monkhorst-Pack grid (essentially a uniformly spaced grid in the [Brillouin Zone](https://en.wikipedia.org/wiki/Brillouin_zone)). Using this method, if we tell the computer the number of *k-points* to sample in each direction (_N<sub>1</sub>_ × _N<sub>2</sub>_ × _N<sub>3</sub>_). These intergers are called 'subdivisions'. VASP (or other DFT package) will take care of the rest.
 
 As you may have guessed, using a denser *k-point grid* will lead to more accurate, but more computationally intensive results. A tradeoff! Also, remember that your cell in the reciprocal space scales as the inverse of your unit cell in real space. This means that having a larger unit cell in real space will require less *k-points*, and vice versa.
 
 Thus, we need to do a **convergence test** to see which value of *n* would give us a well-converged calculation for our given structure.
+
+The VASP input file for _k-points_ is KPOINTS. Let's look at what this looks like.
+
+```
+Regular k-point mesh
+0              ! 0 -> determine number of k points automatically
+Monkhorst-Pack ! Also works with M or m (other option: Gamma for Gamma centered mesh (G, g))
+4  4  4        ! subdivisions N_1, N_2 and N_3 along the reciprocal lattice vectors
+0  0  0        ! optional shift of the mesh (s_1, s_2, s_3)
+```
+
