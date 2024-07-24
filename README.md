@@ -1,61 +1,31 @@
-# VASP: A Beginner's Guide to Adsorption Energy Calculations
+# VASP
 
-This guide introduces the basics of performing adsorption energy calculations using VASP (Vienna Ab initio Simulation Package).
-
-## Table of Contents
-1. [Input Files](#input-files)
-2. [KPOINTS](#kpoints)
-   - [Understanding K-space](#understanding-k-space)
-   - [K-point Mesh](#k-point-mesh)
-   - [Convergence Testing](#convergence-testing)
+A beginner's guide to adsorption energy calculations using VASP.
 
 ## Input Files
 
-To run a VASP calculation, you need four main input files:
+There are four main input files for you to run a VASP calculation: INCAR, POSCAR, POTCAR, and KPOINTS.
 
-1. INCAR
-2. POSCAR
-3. POTCAR
-4. KPOINTS
+Let's get right into it.
 
-Let's explore these files, starting with KPOINTS.
+### KPOINTS
 
-## KPOINTS
+When we use DFT to calculate the electron density, we need to integrate over space. For periodic systems (which we can construct with supercells), the solutions of the Schrodinger equation satisfy [Bloch's theorem](https://en.wikipedia.org/wiki/Bloch%27s_theorem).
 
-### Understanding K-space
+* Bloch function (the form that a wave function in a periodic potential takes):
 
-In Density Functional Theory (DFT) calculations for periodic systems, we utilize k-space (reciprocal space) instead of real space. This approach is based on Bloch's theorem and offers computational advantages.
+  ![image](https://github.com/user-attachments/assets/6e0966cb-0ffe-4b77-bb4f-5ad730a563d5)
 
-#### Bloch's Theorem
-The wave function in a periodic potential takes the form of a Bloch function:
+This property lets us solve the Schrodinger equation for each value of the wave vector, **k**.
 
-![Bloch Function](https://github.com/user-attachments/assets/6e0966cb-0ffe-4b77-bb4f-5ad730a563d5)
+To do this, we need to move from the 3d-space that we live in, called real space, to the space where the wave vectors live. This space is called the *k-space* (or the reciprocal space). The term *k-space* makes sense: it is where the wave vectors, **k** live. Why is it called the reciprocal space? I won't go into the details here, but here's the takeaway: if you send a vector, **a**, from real space to reciprocal space, its magnitude changes from |**a**| to 2π/|**a**|. Hence, the name 'reciprocal'. (If you want to learn more, Chapter 3.1 in Sholl and Steckel's book has a nice explanation).
 
-Key points about k-space:
-- It's where wave vectors (**k**) reside
-- Also known as reciprocal space
-- Vectors in k-space are inversely proportional to real space vectors
-  - |**a**| in real space → 2π/|**a**| in k-space
+**So, why do we want to use the k-space? The computer likes it!**
 
-> 💡 **Tip:** For a deeper understanding of reciprocal space, refer to Chapter 3.1 in Sholl and Steckel's book.
+If we were to integrate in real space, we would have to do a continuous integral, because the space we are integrating over is continuous. In reciprocal space, the integral is only calculated over possible values of **k**. This makes the calculation a lot less intense.
 
-### K-point Mesh
+For the computer to run these calculations, we need to tell it how to do it. This is done by specifying a *k-point mesh*. The most common way to do this is using a Monkhorst-Pack grid (essentially a uniformly spaced grid in the [Brillouin Zone](https://en.wikipedia.org/wiki/Brillouin_zone)). Using this method, if we tell the computer the number of *k-points* to sample in each direction (_n<sub>1</sub>_ × _n<sub>2</sub>_ × _n<sub>3</sub>_), VASP (or other DFT package) will take care of the rest.
 
-To perform calculations in k-space, we define a k-point mesh. The most common method is the Monkhorst-Pack grid, which creates a uniformly spaced grid in the [Brillouin Zone](https://en.wikipedia.org/wiki/Brillouin_zone).
+As you may have guessed, using a denser *k-point grid* will lead to more accurate, but more computationally intensive results. A tradeoff! Also, remember that your cell in the reciprocal space scales as the inverse of your unit cell in real space. This means that having a larger unit cell in real space will require less *k-points*, and vice versa.
 
-#### Specifying the Mesh
-- Define the number of k-points in each direction: _n<sub>1</sub>_ × _n<sub>2</sub>_ × _n<sub>3</sub>_
-- VASP handles the rest of the setup
-
-#### Trade-offs
-- Denser k-point grid → More accurate but computationally intensive
-- Larger real-space unit cell → Fewer k-points needed (and vice versa)
-
-### Convergence Testing
-
-To determine the optimal k-point mesh density, perform a convergence test:
-1. Run calculations with increasing numbers of k-points
-2. Analyze the results to find the point where increasing k-points no longer significantly improves accuracy
-3. Choose the k-point density that balances accuracy and computational cost
-
-> ⚠️ **Important:** Always perform a convergence test for your specific structure to ensure reliable results.
+Thus, we need to do a **convergence test** to see which value of *n* would give us a well-converged calculation for our given structure.
