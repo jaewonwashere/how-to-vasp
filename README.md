@@ -43,7 +43,7 @@ Monkhorst-Pack ! Also works with M or m (other option: Gamma for Gamma centered 
 ## General Steps
 Now let's start preparing our VASP input files.
 
-1. **Prepare directory**: Ideally, VASP works best when all the input files are in a single directory. The output files will then be written into this directory as well. Let's call this '''<base_dir>'''. Inside '''base_dir''', create '''ktest''' and '''encut''' for convergence tests.
+1. **Prepare directory**: Ideally, VASP works best when all the input files are in a single directory. The output files will then be written into this directory as well. Let's call this ```<base_dir>```. Inside ```base_dir```, create ```ktest``` and ```encut``` for convergence tests: ```mkdir ktest``` ```mkdir encut```
 2. **Prepare POSCAR**: This can be done in multiple ways. I like to use ase.Atoms objects and write them into POSCARs.
 3. **Generate POTCAR**: We need to (1) copy the potentials, then (2) concatenate them into a single POSCAR file. First, ```cp ~/vasp_support/potpaw_PBE/<symbol>/POTCAR ./<symbol>_POTCAR```. Then, *in the order that they appear in the POSCAR*, ```H_POTCAR C_POTCAR O_POTCAR Pt_POTCAR >POTCAR```. To check the POTCAR species: ```grep VRHFIN POTCAR```.
 4. Okay, now we have our POSCAR and POTCAR files. We now need to proceed to:
