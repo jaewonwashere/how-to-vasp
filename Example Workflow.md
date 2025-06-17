@@ -1,6 +1,6 @@
 # Example Workflow
 
-**Prepare the Working Directory**
+## Prepare the Working Directory
 
 Create a project directory:
 ```
@@ -10,7 +10,7 @@ cd convergence_(material name)
 mkdir ktest encut
 ```
 
-**Get the POSCAR File**
+## Get the POSCAR File
 
 If the POSCAR file is named like mp-XXX_YYY_POSCAR:
 ```
@@ -20,7 +20,7 @@ mv mp-XXX_YYY_POSCAR POSCAR
 This retrieves the POSCAR file from the library and renames it to just POSCAR
 
 
-**Set up POTCAR**
+## Set up POTCAR
 
 Once the POSCAR file is renamed and in the convergence_(material name) directory, we use the following automation script to generate the full POTCAR file:
 
@@ -70,7 +70,7 @@ grep VRHFIN POTCAR
 You want to see each atom in the order it appears in the POSCAR file. 
 
 
-**Import Input Templates**
+## Import Input Templates
 
 Import all the necessary files and scripts into your convergence_(material name) directory
 
@@ -83,7 +83,7 @@ cp ~/vasp_inputs/templates/runENCUT.py .
 cp ~/vasp_inputs/templates/extractDataENCUT.py .
 ```
 
-**Edit INCAR**
+## Edit INCAR
 
 ``` 
 SYSTEM = [Adsorbate] on [Surface](111)
@@ -111,7 +111,7 @@ NSW = 0
 # LORBIT = 11
 ```
 
-**Distribute Files to Folders**
+## Distribute Files to Folders
 
 ```
 cp POSCAR POTCAR INCAR ./ktest
@@ -120,4 +120,4 @@ cp runKPOINTS.py extractDataKPOINTS.py job ./ktest
 cp runENCUT.py extractDataENCUT.py job ./encut
 ```
 
-**At this point you are ready to run the calculations!**
+At this point you are ready to run the calculations! I hope this was helpful in getting you started.
