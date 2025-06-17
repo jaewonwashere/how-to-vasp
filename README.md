@@ -40,3 +40,42 @@ Monkhorst-Pack ! Also works with M or m (other option: Gamma for Gamma centered 
 0  0  0        ! optional shift of the mesh (s_1, s_2, s_3)
 ```
 
+## General Steps
+Now let's start preparing our VASP input files.
+
+1. **Prepare directory**: Ideally, VASP works best when all the input files are in a single directory. The output files will then be written into this directory as well. Let's call this '''<base_dir>'''. Inside '''base_dir''', create '''ktest''' and '''encut''' for convergence tests.
+2. **Prepare POSCAR**: This can be done in multiple ways. I like to use ase.Atoms objects and write them into POSCARs.
+3. **Generate POTCAR**: We need to (1) copy the potentials, then (2) concatenate them into a single POSCAR file. First, ```cp ~/vasp_support/potpaw_PBE/<symbol>/POTCAR ./<symbol>_POTCAR```. Then, *in the order that they appear in the POSCAR*, ```H_POTCAR C_POTCAR O_POTCAR Pt_POTCAR >POTCAR```. To check the POTCAR species: ```grep VRHFIN POTCAR```.
+4. Okay, now we have our POSCAR and POTCAR files. We now need to proceed to:
+
+## Convergence Tests
+
+The main parameters we are going to test are: KPOINTS and ENCUT (a part of the INCAR file). Our goal here is to find sufficiently high KPOINT mesh density and energy cutoff value that does not sacrifice accuracy while keeping computational costs down.
+
+### KPOINTS
+1. Enter the directory to perform the test: '''cd <base_dir>/ktest'''.
+2. '''cp <base_dir>/{POSCAR,POTCAR} ./'''
+3. '''cp ~/vasp_inputs/ktest/{runKPOINTS.py,extractDataKPOINTS.py,INCAR,job} ./
+4. find ENCUT for convergence: '''grep ENMAX POTCAR'''. This finds the default minimum ENCUT value defined by VASP.
+5. Now let's modify the INCAR for KPOINTS convergence testing. The template is:
+   
+ ISMEAR = 1 (default for conductive material)
+ IBRION = -1 (no ionic relaxations, single-point calculation)
+ NSW = 0
+ EDIFF = 1e-6 (pretty strict energy convergence criterion)
+ EDIFFG = -3.00e-02 (needed for relaxation calculations later)
+ 
+7. '''conda activate fair-chem'''
+8. '''python runKPOINTS.py <min KPIONTS> <max KPOINTS> <interval>'''. For unit cells relevant to adsorption energy calculations, I recommend doing '''python runKPOINTS.py 3 6 1'''.
+9. Once the jobs are complete: '''python extractDataKPOINTS.py 3 6 1'''
+10. Plot KPOINTS vs. output, then choose a KPOINT value where the plot is relatively constant.
+
+### ENCUT
+1. Enter the directory to perform the test: '''cd <base_dir>/encut'''.
+2. '''cp ../ktest/{POSCAR,POTCAR,INCAR,KPOINTS} ./'''
+3. '''cp ~/vasp_inputs/encut/{runENCUT.py,extractDataENCUT.py,job} ./
+4. Edit KPOINTS (value from ktest).
+5. '''conda activate fair-chem'''
+6. '''python runENCUT.py <min ENCUT> <max ENCUT> <interval>'''. I recommend doing '''python runENCUT.py 400 500 50'''.
+9. Once the jobs are complete: '''python extractDataENCUT.py 400 500 50'''
+10. Plot ENCUT vs. output, then choose an ENCUT value where the plot is relatively constant.
