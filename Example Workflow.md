@@ -1,5 +1,7 @@
 # Example Workflow
 
+These instructions are more or less my workflow for running convergence tests. My POSCAR files come from OCP (Open Catalyst Project) calculations, and I have them all in a directory called poscarfiles. My POSCAR files are named like "POSCAR_mp-126_N", which corresponds to Nitrogen placed onto Pt (mp-126). 
+
 ## Prepare the Working Directory
 
 Create a project directory:
@@ -10,26 +12,28 @@ cd convergence_(material name)
 mkdir ktest encut
 ```
 
+To continue my Pt / N example, I would name this directory "convergence_Pt"
+
 ## Get the POSCAR File
 
-If the POSCAR file is named like mp-XXX_YYY_POSCAR:
+If the POSCAR file is named like POSCAR_mp-126_N:
 ```
-cp ~/poscarfiles/mp-XXX_YYY_POSCAR ./
-mv mp-XXX_YYY_POSCAR POSCAR
+cp ~/poscarfiles/POSCAR_mp-126_N ./
+mv POSCAR_mp-126_N POSCAR
 ```
-This retrieves the POSCAR file from the library and renames it to just POSCAR
 
+For example, this takes POSCAR_mp-126_N from my poscarfiles directory, moves it to the convergence_Pt directory, and renames it to POSCAR.  
 
 ## Set up POTCAR
 
 Once the POSCAR file is renamed and in the convergence_(material name) directory, we use the following automation script to generate the full POTCAR file:
 
-First, create the script in your home directory. 
+First, create the following automation script in your home directory. 
 ```
 cd ~
 nano generate_POTCAR
 ```
-Then, paste the following into the script. This automates the process of retrieving and combining the individual POTCAR_(atom) files. 
+Then, paste the following code into the script. This automates the process of retrieving and combining the individual POTCAR_(atom) files. 
 
 ```
 import os
@@ -58,21 +62,21 @@ if __name__ == "__main__":
 ```
 
 Finally, run the script to generate the combined POTCAR file.
+
 ```
 cp ~/generate_POTCAR ./
 ```
 
-Ensure the ordering matches the atomic order in the POSCAR by using the following commmand.
+Ensure the ordering matches the atomic order in the POSCAR by using the following commmand. In our example case, we would want to make sure that the output first displays Pt, then **after** Pt displays N. 
 
 ```
 grep VRHFIN POTCAR
 ```
-You want to see each atom in the order it appears in the POSCAR file. 
 
 
 ## Import Input Templates
 
-Import all the necessary files and scripts into your convergence_(material name) directory
+Import all the following files and scripts into your convergence_(material name) directory
 
 ```
 cp ~/vasp_inputs/templates/INCAR .
@@ -83,7 +87,7 @@ cp ~/vasp_inputs/templates/runENCUT.py .
 cp ~/vasp_inputs/templates/extractDataENCUT.py .
 ```
 
-## Edit INCAR
+## Edit INCAR for Convergence Testing
 
 ``` 
 SYSTEM = [Adsorbate] on [Surface](111)
@@ -93,7 +97,7 @@ GGA = PE
 
 # scf
 # PREC = Accurate
-EDIFF = 1e-6 # energy convergance criterion
+EDIFF = 1e-6 # energy convergence criterion
 ALGO = Fast
 # LREAL = False
 ISMEAR = 1
