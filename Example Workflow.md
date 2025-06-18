@@ -26,7 +26,7 @@ For example, this takes POSCAR_mp-126_N from my poscarfiles directory, moves it 
 
 ## Set up POTCAR
 
-Once the POSCAR file is renamed and in the convergence_(material name) directory, we use the following automation script to generate the full POTCAR file:
+Once the POSCAR file is renamed and in the convergence_(material name) directory, we can set up an automation script to generate the full POTCAR file.
 
 First, create the following automation script in your home directory. 
 ```
@@ -61,7 +61,7 @@ if __name__ == "__main__":
     concatenate_potcars(elements, potcar_dir, output_potcar)
 ```
 
-Finally, import the script to your directory and run the script to generate the combined POTCAR file.
+Finally, copy the script from your home directory to your convergence_(material name) directory and run the script to generate the combined POTCAR file. In future runs you will only need to do this step, as the generate_POTCAR will already be in your home directory. 
 
 ```
 cp ~/generate_POTCAR ./
