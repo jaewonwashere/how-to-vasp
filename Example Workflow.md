@@ -61,10 +61,11 @@ if __name__ == "__main__":
     concatenate_potcars(elements, potcar_dir, output_potcar)
 ```
 
-Finally, run the script to generate the combined POTCAR file.
+Finally, import the script to your directory and run the script to generate the combined POTCAR file.
 
 ```
 cp ~/generate_POTCAR ./
+python generate_POTCAR
 ```
 
 Ensure the ordering matches the atomic order in the POSCAR by using the following commmand. In our example case, we would want to make sure that the output first displays Pt, then **after** Pt displays N. 
