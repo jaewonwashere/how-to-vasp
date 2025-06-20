@@ -1,6 +1,6 @@
-#Some tips for using the SDSC cluster.
+# Some tips for using the SDSC cluster.
 
-##Viewing project details (account codes)
+## Viewing project details (account codes)
 
 ```expanse-client resource```: lists available resources
 
